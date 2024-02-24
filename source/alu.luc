@@ -13,9 +13,10 @@ module alu (
   compare compare; 
   multiplier multiplier;
   mux_4 mux_4_choice[32];
+  mux_2 mux_2_arith[32];
 
   var i;
-  sig comp[32];
+  sig comp[32], arith[32];
   
   always {
     // default values to silence errors, can remove
@@ -51,6 +52,13 @@ module alu (
     //multiplier
     multiplier.a = a;
     multiplier.b = b;
+
+    mux_2_arith.s0 = alufn_signal[1];
+    for(i = 0; i<32; i++){
+    mux_2_arith.in[i][0] = adder.out[i];
+    mux_2_arith.in[i][1] = multiplier.mul[i];
+    }
+    arith = mux_2_arith.out;
     
     // compare
     compare.z = adder.z;
@@ -75,7 +83,7 @@ module alu (
     mux_4_choice.s1 = 32x{alufn_signal[4]};
     
     for(i = 0; i<32; i++){
-    mux_4_choice.in[i][0] = adder.out[i];
+    mux_4_choice.in[i][0] = arith[i];
     mux_4_choice.in[i][1] = boolean.bool[i];
     mux_4_choice.in[i][2] = shifter.shift[i];
     mux_4_choice.in[i][3] = comp[i];
