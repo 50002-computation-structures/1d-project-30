@@ -19,8 +19,9 @@ module shifter (
     
     mux_2_mirror.s0 = 32x{alufn_signal[0]};
     for(i = 0; i<32; i++){
-      mux_2_mirror.in[0][i] = a[i];
-      mux_2_mirror.in[1][i] = mirror_a[i];
+    //since using a right shifter, if alufn 0, mirror, else no mirror.
+      mux_2_mirror.in[i][1] = a[i];
+      mux_2_mirror.in[i][0] = mirror_a[i];
     }
     
     mux_2_padding.s0 = alufn_signal[1];
@@ -36,8 +37,9 @@ module shifter (
     
     mux_2_final.s0 = 32x{alufn_signal[0]};
     for(i = 0; i<32; i++){
-      mux_2_final.in[0][i] = right_shift.out[i];
-      mux_2_final.in[1][i] = last_mirror_a[i];
+    //since using a right shifter, if alufn 0, mirror, else no mirror.
+      mux_2_final.in[i][1] = right_shift.out[i];
+      mux_2_final.in[i][0] = last_mirror_a[i];
     }
     
     shift = mux_2_final.out;
