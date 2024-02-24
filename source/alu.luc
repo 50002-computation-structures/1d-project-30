@@ -12,28 +12,32 @@ module alu (
   shifter shifter;
   compare compare; 
   multiplier multiplier;
+  mux_4 mux_4_choice[32];
+
+  var i;
+  sig comp[32];
   
   always {
-    // default values to silence errors 
-    z = 0;
-    v = 0;
-    n = 0;
-    out = 0;
-    adder.a = 0;
-    adder.b = 0;
-    adder.alufn_signal = 0;
-    boolean.a = 0;
-    boolean.b = 0;
-    boolean.alufn_signal = 0;
-    //shifter.a = 0;
-    //shifter.b = 0;
-    //shifter.alufn_signal = 0;
-    compare.z = 0;
-    compare.v = 0;
-    compare.n = 0;
-    compare.alufn_signal = 0;
-    multiplier.a = 0;
-    multiplier.b = 0;
+    // default values to silence errors, can remove
+    // z = 0;
+    // v = 0;
+    // n = 0;
+    // out = 0;
+    // adder.a = 0;
+    // adder.b = 0;
+    // adder.alufn_signal = 0;
+    // boolean.a = 0;
+    // boolean.b = 0;
+    // boolean.alufn_signal = 0;
+    // shifter.a = 0;
+    // shifter.b = 0;
+    // shifter.alufn_signal = 0;
+    // compare.z = 0;
+    // compare.v = 0;
+    // compare.n = 0;
+    // compare.alufn_signal = 0;
+    // multiplier.a = 0;
+    // multiplier.b = 0;
     
     // adder
     adder.a = a;
@@ -43,13 +47,17 @@ module alu (
     v = adder.v;
     n = adder.n;
     // out = adder.out;
+
+    //multiplier
+    multiplier.a = a;
+    multiplier.b = b;
     
     // compare
     compare.z = adder.z;
     compare.v = adder.v;
     compare.n = adder.n;
     compare.alufn_signal = alufn_signal;
-    // out = c{31x{b0}, compare.cmp}; // concatenation 
+    comp = c{31x{b0}, compare.cmp}; // concatenation 
     
     // boolean
     boolean.a = a;
@@ -62,6 +70,16 @@ module alu (
     shifter.b = b[4:0];
     shifter.alufn_signal = alufn_signal;
     // out = shifter.shift;
+
+    mux_4_choice.s0 = 32x{alufn_signal[5]};
+    mux_4_choice.s1 = 32x{alufn_signal[4]};
     
+    for(i = 0; i<32; i++){
+    mux_4_choice.in[i][0] = adder.out[i];
+    mux_4_choice.in[i][1] = boolean.bool[i];
+    mux_4_choice.in[i][2] = shifter.shift[i];
+    mux_4_choice.in[i][3] = comp[i];
+    }
+    out = mux_4_choice.out;
   }
 }
