@@ -1,0 +1,30 @@
+module adder (
+    input a[16],
+    input b[16],
+    input alufn_signal[6],
+    output out[16],
+    output z,
+    output v,
+    output n
+  ) {
+  
+  adder_zvn_unit zvn_unit;
+  rca rca_unit;
+
+  always {
+    // computing s
+    rca_unit.a = a;
+    rca_unit.b = b;
+    rca_unit.alufn = alufn_signal[0];
+    out = rca_unit.s;
+    
+    // computing z,v,n
+    zvn_unit.a = a;
+    zvn_unit.b = b;
+    zvn_unit.s = rca_unit.s;
+    zvn_unit.alufn = alufn_signal[0];
+    z = zvn_unit.z;
+    v = zvn_unit.v;
+    n = zvn_unit.n;
+  }
+}
