@@ -36,7 +36,7 @@ module multiplier (
     for (i=2; i<31; i++){
       for (j=0; j<32-i; j++){
         fa.a[current_row_fa_index+j] = a[j] & b[i];
-        fa.b[current_row_fa_index+j] = fa.s[previous_row_fa_index+1];
+        fa.b[current_row_fa_index+j] = fa.s[previous_row_fa_index+1+j];
         
         if (j == 0){
           fa.ci[current_row_fa_index+j] = b0; //GND
