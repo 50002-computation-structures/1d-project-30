@@ -5,7 +5,7 @@ module shifter (
     output shift[16]
   ) {
   mirror first_mirror;
-  mux_2 mux_2_mirror[1581];
+  mux_2 mux_2_mirror[16];
   mux_2 mux_2_padding;
   sixteen_bit_right_shifter right_shift;
   mirror last_mirror;
