@@ -4,8 +4,57 @@ module multiplier (
     output mul[32]
   ) {
 
+  fa fa[496];
+  var i;
+  var j;
+  var current_row_fa_index;
+  var previous_row_fa_index;
+
   always {
-    // default values to silence errors 
-    mul = 0;
+    // LSB output
+    mul[0] = b[0] & a[0];
+    
+    // second row, 31 columns, AND gate input to the FAs
+    for (i = 0; i < 31; i++) {
+      fa.a[i] = a[i] &  b[1];
+      fa.b[i] = a[i+1] & b[0];
+      if (i == 0){
+        fa.ci[i] = b0;
+      }
+      else{
+        // i=1 onwards
+        fa.ci[i] = fa.co[i-1];
+      }
+    }
+    
+    previous_row_fa_index = 0;
+    current_row_fa_index = 31;
+    
+    // bit 1 out
+    mul[1] = fa.s[previous_row_fa_index];
+    
+    for (i=2; i<31; i++){
+      for (j=0; j<32-i; j++){
+        fa.a[current_row_fa_index+j] = a[j] & b[i];
+        fa.b[current_row_fa_index+j] = fa.s[previous_row_fa_index+1];
+        
+        if (j == 0){
+          fa.ci[current_row_fa_index+j] = b0; //GND
+        }
+        else{
+          fa.ci[current_row_fa_index+j] = fa.co[current_row_fa_index+j-1];
+        }
+      }
+      // update the indexes
+      previous_row_fa_index = current_row_fa_index;
+      current_row_fa_index = current_row_fa_index + j;
+      // set output
+      mul[i] = fa.s[previous_row_fa_index];
   }
+    
+    // MSB out
+    fa.a[495] = a[0] & b[31];
+    fa.b[495] = fa.s[494];
+    fa.ci[495] = b0;
+    mul[31] = fa.s[495];
 }
