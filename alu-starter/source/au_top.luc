@@ -45,7 +45,6 @@ module au_top (
     // TODO: change this to suit your needs
     // press button[0] to store 'a' value based on current dipswitches 
     // press button[1] to store 'b' value based on current dipswitches 
-    // bit[24:17] of a,b always set to 0 for convenience 
     // press button[2] to store 'alufn' value based on io_dip[0][5:0] (6 rightmost dipswitch) 
     if (button_conditioner.out[0]){
        // store a 

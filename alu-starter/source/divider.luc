@@ -1,0 +1,11 @@
+// divide a by b
+module divider (
+    input a[16], // dividend
+    input b[16], // divisor
+    output d[16] // a/b
+  ) {
+
+  always {
+    d = a/b;
+  }
+}
